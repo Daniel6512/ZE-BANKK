@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ZE-BANK - International</title>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -43,7 +43,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; transition: background-color 0.3s, border-color 0.3s, color 0.3s; }
         
-        /* ДОБАВЛЕНО height: 100dvh для правильного расчета высоты на мобилках */
         body { background-color: var(--bg-body); color: var(--text-main); height: 100vh; height: 100dvh; overflow: hidden; display: flex; }
 
         /* ЭКРАН АВТОРИЗАЦИИ */
@@ -170,18 +169,19 @@
             .auth-box { width: 90%; padding: 32px 24px; }
             .auth-box h1 { font-size: 24px; }
 
-            /* Боковое меню -> Верхняя панель (ИСПРАВЛЕНО) */
+            /* Боковое меню -> Нижняя панель */
             .sidebar { 
                 width: 100%; 
                 height: auto; 
                 flex-direction: row; 
-                padding: 0; 
+                padding: 8px 8px 24px 8px; /* <-- ДОБАВЛЕН БЕЗОПАСНЫЙ ОТСТУП СНИЗУ */
                 border-right: none; 
-                border-bottom: 1px solid var(--border); /* Рамка теперь снизу */
+                border-top: 1px solid var(--border); /* Рамка сверху, как и положено нижней панели */
+                border-bottom: none;
                 background: var(--bg-panel);
-                /* order: 2; удалено, чтобы меню оставалось вверху */
+                order: 2; /* <-- ВОЗВРАЩЕНО ВНИЗ */
                 z-index: 1000;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Тень падает вниз */
+                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05); /* Тень падает вверх */
             }
             .brand, .user-widget, .nav-divider { display: none; }
             
@@ -190,13 +190,15 @@
                 width: 100%; 
                 overflow-x: auto; 
                 align-items: center; 
-                padding: 8px;
+                padding: 0;
                 gap: 4px;
             }
             .nav-list::-webkit-scrollbar { display: none; }
             
             .nav-item { 
                 flex-direction: column; 
+                align-items: center;
+                justify-content: center;
                 min-width: 76px; 
                 padding: 8px 4px; 
                 gap: 6px; 
@@ -206,7 +208,7 @@
                 flex-shrink: 0;
             }
             .nav-item i { width: 20px; height: 20px; margin: 0; }
-            .nav-item span { white-space: nowrap; }
+            .nav-item span { white-space: nowrap; display: block; }
 
             /* Контент */
             .main-content { 
@@ -239,7 +241,7 @@
 
             /* Модалки и тосты */
             .custom-modal { padding: 24px; width: 92%; }
-            #toast-container { bottom: 85px; right: 16px; left: 16px; align-items: center; }
+            #toast-container { bottom: 95px; right: 16px; left: 16px; align-items: center; } /* Уведомления тоже чуть выше панели */
             .toast { width: 100%; justify-content: center; }
         }
     </style>
@@ -300,7 +302,7 @@
         </div>
     </div>
 
-    <!-- БОКОВОЕ МЕНЮ (ВЕРХНЯЯ ПАНЕЛЬ НА МОБИЛКАХ) -->
+    <!-- БОКОВОЕ МЕНЮ (НИЖНЯЯ ПАНЕЛЬ НА МОБИЛКАХ) -->
     <aside class="sidebar">
         <div class="brand">
             <i data-feather="hexagon" style="color: var(--primary-green);"></i>
@@ -470,7 +472,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             feather.replace(); setupRippleEffect(); setupTabs(); applyTheme(); applyLanguage();
             
-            // Фикс регулярки: заменяем всё, что НЕ является цифрой (\D), на пустоту, чтобы нельзя было ввести буквы
             document.getElementById('transfer-card').addEventListener('input', e => {
                 e.target.value = e.target.value.replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim();
             });
